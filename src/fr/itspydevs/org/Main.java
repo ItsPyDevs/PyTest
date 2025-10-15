@@ -30,8 +30,8 @@ public class Main extends Thread {
 		label.setVerticalAlignment(SwingConstants.TOP);
 		
 		Font font = Font.createFont(Font.TRUETYPE_FONT, Main.class.getResource("/ubuntu.ttf").openStream());
+		label.setFont(font);
 		
-		label.setFont();
 		frame.add(label);
 		
 		System.out.println("code exec");
