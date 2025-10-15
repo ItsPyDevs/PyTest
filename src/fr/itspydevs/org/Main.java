@@ -19,6 +19,7 @@ public class Main {
 	    Image image = new ImageIcon(image_url).getImage();
 	    frame.setIconImage(image);
 	    
+	    
 	    frame.setSize(width, height);
 	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    
