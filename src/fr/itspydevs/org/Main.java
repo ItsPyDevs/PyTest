@@ -6,8 +6,8 @@ import java.net.URL;
 import javax.swing.*;
 
 public class Main extends Thread {
-	static int width = 400;
-	static int height = 500;
+	static int width = 815;
+	static int height = 640;
 
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
@@ -28,11 +28,15 @@ public class Main extends Thread {
 		JLabel label = new JLabel("Salut", SwingConstants.NORTH_EAST);
 		label.setVerticalAlignment(SwingConstants.TOP);
 		
-		
 		Font text_font = new Font("Ubuntu", Font.PLAIN, 30);
-		
 		label.setFont(text_font);
 		
+		JButton bouton = new JButton("Cliquez moi!");
+		bouton.setSize(200, 50);	
+		bouton.addActionListener(e -> {
+            System.out.println("Bouton cliqué!");
+        });
+		frame.add(bouton);
 		
 		frame.add(label);
 		
