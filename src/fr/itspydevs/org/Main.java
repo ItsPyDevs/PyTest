@@ -2,7 +2,6 @@ package fr.itspydevs.org;
 
 import java.awt.Font;
 import java.awt.Image;
-import java.io.InputStream;
 import java.net.URL;
 import javax.swing.*;
 
@@ -29,8 +28,11 @@ public class Main extends Thread {
 		JLabel label = new JLabel("Salut", SwingConstants.NORTH_EAST);
 		label.setVerticalAlignment(SwingConstants.TOP);
 		
-		Font font = Font.createFont(Font.TRUETYPE_FONT, Main.class.getResource("/ubuntu.ttf").openStream());
-		label.setFont(font);
+		
+		Font text_font = new Font("Ubuntu", Font.PLAIN, 30);
+		
+		label.setFont(text_font);
+		
 		
 		frame.add(label);
 		
