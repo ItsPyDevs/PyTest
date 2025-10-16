@@ -35,7 +35,7 @@ public class Main {
 		bouton.addActionListener(e -> {
 			//   TODO Fetch & show the image
 			
-			System.out.println();
+			System.out.println("test");
         });
 		
 		bouton.setBackground(Color.RED);
