@@ -5,7 +5,7 @@ import java.awt.Image;
 import java.net.URL;
 import javax.swing.*;
 
-public class Main extends Thread {
+public class Main {
 	static int width = 815;
 	static int height = 640;
 
