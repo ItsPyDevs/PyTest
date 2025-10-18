@@ -130,7 +130,7 @@ public class Main {
 		save_bouton.setSize(save_button_height, save_button_width);
 		save_bouton.setBounds(save_button_x, save_button_y, save_button_height, save_button_width);
 		save_bouton.setFont(save_font);
-		save_bouton.setFocusable(false);
+		// save_bouton.setFocusable(false);
 		save_bouton.setForeground(Color.white);
 		save_bouton.setBorderPainted(true);
 		save_bouton.setBackground(blurple);
