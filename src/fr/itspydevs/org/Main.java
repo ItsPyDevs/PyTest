@@ -1,6 +1,15 @@
 package fr.itspydevs.org;
 
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Random;
+import org.json.JSONObject;
+
 import javax.swing.*;
 
 public class Main {	
@@ -25,23 +34,40 @@ public class Main {
 		Color bg_color = new Color(28, 29, 34);
 		Color blurple = new Color(85, 57, 204);
 		
+		ArrayList<String> liste_url = new ArrayList<String>();
+		
+		liste_url.add("https://dog.ceo/api/breeds/image/random");
+		liste_url.add("https://api.thecatapi.com/v1/images/search");
+		liste_url.add("https://randomfox.ca/floof/");
+		liste_url.add("https://random-d.uk/api/random");
+		
+		int liste_size = liste_url.size();
+		
+		System.out.println(liste_size);
+		
+		Random rand = new Random();
+		
 		
 		/*
 		 *   X Y Z SYS
 		 */
-		int fetch_button_x = 105 ;  // W
-		int fetch_button_y = 551;   // H
+		int fetch_button_x = 105 ;      // W
+		int fetch_button_y = 551;       // H
 	
-		int save_button_x = 0;      // W
-		int save_button_y = 551;    // H
+		int save_button_x = 0;          // W
+		int save_button_y = 551;        // H
 		
-		int setting_button_x = 699; // W
-		int setting_button_y = 551; // H 
+		int setting_button_x = 699;     // W
+		int setting_button_y = 551;     // H 
 		
-		int back_button_x = 5;    // W
-		int back_button_y = 310;     // H
+		int back_button_x = 5;          // W
+		int back_button_y = 310;        // H
+		
+		int label_menu_x = 10;          // W
+		int label_menu_y = 50;          // H
+		
 		/*
-		 *   BUTTON SIZE
+		 *   SIZE
 		 */
 		int fetch_button_height = 589;
 		int fetch_button_width = 50;
@@ -55,10 +81,13 @@ public class Main {
 		int back_button_height = 324;
 		int back_button_width = 50;
 		
+		int label_menu_height = 100;
+		int label_menu_width = 190;
+		
 		/*
          *    LABEL
          */
-		JLabel label = new JLabel("Salut", SwingConstants.NORTH_EAST);
+		JLabel label = new JLabel("Salut");
 		
 		
 		/*
@@ -114,7 +143,7 @@ public class Main {
 		label.setVerticalAlignment(SwingConstants.TOP);
 		label.setForeground(Color.white);
 		label.setFont(label_font);
-		
+		label.setBounds(label_menu_x, label_menu_y, label_menu_height, label_menu_width);
 		
 		/*
 		 *   MODIF BOUTON
@@ -130,7 +159,7 @@ public class Main {
 		save_bouton.setSize(save_button_height, save_button_width);
 		save_bouton.setBounds(save_button_x, save_button_y, save_button_height, save_button_width);
 		save_bouton.setFont(save_font);
-		// save_bouton.setFocusable(false);
+		save_bouton.setFocusable(false);
 		save_bouton.setForeground(Color.white);
 		save_bouton.setBorderPainted(true);
 		save_bouton.setBackground(blurple);
@@ -156,29 +185,66 @@ public class Main {
 		
 		fetch_bouton.addActionListener(e -> {
 			//   TODO Fetch & show the image
-			System.out.println("fetch_bouton fetch pressé !");
+			int rand_index = rand.nextInt(liste_size);
+			String url_random = liste_url.get(rand_index);
+			String json_path = "";
+			
+			if (url_random == "https://dog.ceo/api/breeds/image/random") {
+				json_path = "message";
+			}	
+			
+			if (url_random == "https://api.thecatapi.com/v1/images/search") {
+				json_path = "url";
+			}
+			
+			if (url_random == "https://randomfox.ca/floof/") {
+				json_path = "image";
+			}
+			
+			if (url_random == "https://random-d.uk/api/random") {
+				json_path = "url";
+			}
+
+			try {
+			    URL url = new URL(url_random);
+			    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			    con.setRequestMethod("GET");			    
+			    BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+			    StringBuilder content = new StringBuilder();
+			    String line;
+			    while ((line = reader.readLine()) != null) {
+			    	content.append(line);
+			    }
+			    reader.close();
+			    label.setText(content.toString());
+			    System.out.println(content);
+			    con.disconnect();
+			} catch (IOException ex) {}
+			
+			
+		
         });
 		
 		save_bouton.addActionListener(e -> {
 			//   TODO Get & Save the Image
-			System.out.println("save_bouton fetch pressé !");
+			System.out.println("save_bouton bouton pressé !");
         });
 		
+		
+		
+		
 		setting_bouton.addActionListener(e -> {
-			//   TODO Open the setting panel
+			setting_frame.setLocation(main_frame.getLocation());
 			setting_frame.setVisible(true);
 			main_frame.setVisible(false);
-			
-			System.out.println("setting_bouton fetch pressé!");
+			System.out.println("setting_bouton bouton pressé!");
 			
         });
 		
 		back_bouton.addActionListener(e -> {
-			//   TODO Close the setting panel and open the main frame
             setting_frame.setVisible(false);
             main_frame.setVisible(true);
-            
-            System.out.println("back_bouton fetch pressé!");
+            System.out.println("back_bouton bouton pressé!");
             
         });
 		
