@@ -1,20 +1,18 @@
 package fr.itspydevs.org;
 
 import java.awt.*;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Random;
 import org.json.JSONObject;
-
-import javax.swing.*;
+import java.net.*;
+import java.net.http.*;
 
 public class Main {	
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception{
 		JFrame main_frame = new JFrame();
 		JFrame setting_frame = new JFrame();
 		
@@ -43,8 +41,6 @@ public class Main {
 		
 		int liste_size = liste_url.size();
 		
-		System.out.println(liste_size);
-		
 		Random rand = new Random();
 		
 		
@@ -63,7 +59,7 @@ public class Main {
 		int back_button_x = 5;          // W
 		int back_button_y = 310;        // H
 		
-		int label_menu_x = 10;          // W
+		int label_menu_x = 98;          // W
 		int label_menu_y = 50;          // H
 		
 		/*
@@ -81,13 +77,10 @@ public class Main {
 		int back_button_height = 324;
 		int back_button_width = 50;
 		
-		int label_menu_height = 100;
-		int label_menu_width = 190;
-		
 		/*
          *    LABEL
          */
-		JLabel label = new JLabel("Salut");
+		JLabel img_label = new JLabel();
 		
 		
 		/*
@@ -95,7 +88,7 @@ public class Main {
 		 */
 		JButton save_bouton = new JButton("save");
 		JButton fetch_bouton = new JButton("Fetch");
-		JButton setting_bouton = new JButton("Settings");
+		JButton setting_bouton = new JButton("Exit");
 		JButton back_bouton = new JButton("Back");
 		
 		
@@ -107,10 +100,10 @@ public class Main {
 		main_frame.setIconImage(new ImageIcon(Main.class.getResource("/icone.png")).getImage());
 		main_frame.setSize(main_width, main_height);
 		main_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		main_frame.setTitle("NSFWapp");
+		main_frame.setTitle("RAnimals");
 		main_frame.setVisible(true);
 		main_frame.setResizable(false);
-		main_frame.add(label);
+		main_frame.add(img_label);
 		main_frame.add(save_bouton);
 		main_frame.add(fetch_bouton);
 		main_frame.add(setting_bouton);
@@ -140,10 +133,9 @@ public class Main {
 		/*
 		 *   MODIF LABEL
 		 */
-		label.setVerticalAlignment(SwingConstants.TOP);
-		label.setForeground(Color.white);
-		label.setFont(label_font);
-		label.setBounds(label_menu_x, label_menu_y, label_menu_height, label_menu_width);
+		img_label.setVerticalAlignment(SwingConstants.TOP);
+		img_label.setForeground(Color.white);
+		img_label.setFont(label_font);
 		
 		/*
 		 *   MODIF BOUTON
@@ -187,6 +179,8 @@ public class Main {
 			//   TODO Fetch & show the image
 			int rand_index = rand.nextInt(liste_size);
 			String url_random = liste_url.get(rand_index);
+			// String url_random = "https://api.thecatapi.com/v1/images/search";
+			
 			String json_path = "";
 			
 			if (url_random == "https://dog.ceo/api/breeds/image/random") {
@@ -206,20 +200,40 @@ public class Main {
 			}
 
 			try {
-			    URL url = new URL(url_random);
-			    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-			    con.setRequestMethod("GET");			    
-			    BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-			    StringBuilder content = new StringBuilder();
-			    String line;
-			    while ((line = reader.readLine()) != null) {
-			    	content.append(line);
-			    }
-			    reader.close();
-			    label.setText(content.toString());
-			    System.out.println(content);
-			    con.disconnect();
-			} catch (IOException ex) {}
+				HttpClient client = HttpClient.newHttpClient();
+				HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url_random)).build();
+				HttpResponse<String> response;
+				response = client.send(request, HttpResponse.BodyHandlers.ofString());
+				
+				JSONObject json_resp = new JSONObject(response.body().replace("[", "").replace("]", ""));
+				String image_url = json_resp.getString(json_path);
+				
+				System.out.println(image_url);
+				
+				if (url_random == "https://random-d.uk/api/random") {
+					image_url = image_url.replace("http://", "https://");
+				}
+				
+				
+				Image image = new ImageIcon(new URL(image_url)).getImage();
+				
+				Image newImage = image.getScaledInstance(600, 450, Image.SCALE_DEFAULT);
+				
+				img_label.setBounds(label_menu_x, label_menu_y, 600, 600);
+				
+				String size = 600 + "," + 600;
+				
+				System.out.println(size);
+				
+				img_label.setIcon(new ImageIcon(newImage));
+				
+				
+			} catch (IOException | InterruptedException e1) {
+				
+			} finally {
+				
+			}
+		    
 			
 			
 		
@@ -237,7 +251,7 @@ public class Main {
 			setting_frame.setLocation(main_frame.getLocation());
 			setting_frame.setVisible(true);
 			main_frame.setVisible(false);
-			System.out.println("setting_bouton bouton pressé!");
+			System.out.println("exit_bouton bouton pressé!");
 			
         });
 		
