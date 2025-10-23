@@ -1,9 +1,13 @@
 package fr.itspydevs.org;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+
 import java.util.ArrayList;
 import java.util.Random;
 import org.json.JSONObject;
@@ -62,6 +66,12 @@ public class Main {
 		int label_menu_x = 98;          // W
 		int label_menu_y = 50;          // H
 		
+		int confirm_bouton_x = 5;       // H
+		int confirm_bouton_y = 257;     // W
+		
+		int confirm_label_x = 110;
+		int confirm_label_y = 50;
+		
 		/*
 		 *   SIZE
 		 */
@@ -77,10 +87,17 @@ public class Main {
 		int back_button_height = 324;
 		int back_button_width = 50;
 		
+		int confirm_button_height = 324;
+		int confirm_button_width = 50;
+		
+		int confirm_label_height = 200;
+		int confirm_label_width = 20;
+		
 		/*
          *    LABEL
          */
 		JLabel img_label = new JLabel();
+		JLabel confirm_label = new JLabel("Are you sure?");
 		
 		
 		/*
@@ -88,8 +105,9 @@ public class Main {
 		 */
 		JButton save_bouton = new JButton("save");
 		JButton fetch_bouton = new JButton("Fetch");
-		JButton setting_bouton = new JButton("Exit");
+		JButton exit_bouton = new JButton("Exit");
 		JButton back_bouton = new JButton("Back");
+		JButton confirm_bouton = new JButton("Confirmer");
 		
 		
 		/*
@@ -106,7 +124,7 @@ public class Main {
 		main_frame.add(img_label);
 		main_frame.add(save_bouton);
 		main_frame.add(fetch_bouton);
-		main_frame.add(setting_bouton);
+		main_frame.add(exit_bouton);
 
 		/*
 		 *   MODIF SETTING FRAME
@@ -114,10 +132,12 @@ public class Main {
 		setting_frame.setIconImage(new ImageIcon(Main.class.getResource("/icone.png")).getImage());
 		setting_frame.setSize(setting_frame_width, setting_frame_height);
 		setting_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setting_frame.setTitle("Paramètres");
+		setting_frame.setTitle("Exit");
 		setting_frame.setLayout(null);
 		setting_frame.getContentPane().setBackground(bg_color);
 		setting_frame.add(back_bouton);
+		setting_frame.add(confirm_bouton);
+		setting_frame.add(confirm_label);
 		setting_frame.setResizable(false);
 		
 		
@@ -128,6 +148,7 @@ public class Main {
 		Font fetch_font = new Font("Ubuntu", Font.PLAIN, 15);
 		Font save_font = new Font("Ubuntu", Font.PLAIN, 15);
 		Font setting_font = new Font("Ubuntu", Font.PLAIN, 15);
+		Font setting_font_label = new Font("Ubuntu", Font.PLAIN, 20);
 		
 		
 		/*
@@ -136,6 +157,10 @@ public class Main {
 		img_label.setVerticalAlignment(SwingConstants.TOP);
 		img_label.setForeground(Color.white);
 		img_label.setFont(label_font);
+		
+		confirm_label.setForeground(Color.red);
+		confirm_label.setBounds(confirm_label_x, confirm_label_y, confirm_label_height, confirm_label_width);
+		confirm_label.setFont(setting_font_label);
 		
 		/*
 		 *   MODIF BOUTON
@@ -156,13 +181,13 @@ public class Main {
 		save_bouton.setBorderPainted(true);
 		save_bouton.setBackground(blurple);
 		
-		setting_bouton.setSize(setting_button_height, setting_button_width);
-		setting_bouton.setBounds(setting_button_x, setting_button_y, setting_button_height, setting_button_width);
-		setting_bouton.setFont(setting_font);
-		setting_bouton.setFocusable(false);
-		setting_bouton.setForeground(Color.white);
-		setting_bouton.setBorderPainted(true);
-		setting_bouton.setBackground(blurple);
+		exit_bouton.setSize(setting_button_height, setting_button_width);
+		exit_bouton.setBounds(setting_button_x, setting_button_y, setting_button_height, setting_button_width);
+		exit_bouton.setFont(setting_font);
+		exit_bouton.setFocusable(false);
+		exit_bouton.setForeground(Color.white);
+		exit_bouton.setBorderPainted(true);
+		exit_bouton.setBackground(blurple);
 		
 		back_bouton.setBounds(back_button_x, back_button_y, back_button_height, back_button_width);
 		back_bouton.setSize(back_button_height, back_button_width);
@@ -171,15 +196,20 @@ public class Main {
 		back_bouton.setBorderPainted(true);
 		back_bouton.setForeground(Color.white);
 		
+		
+		confirm_bouton.setBounds(confirm_bouton_x, confirm_bouton_y, confirm_button_height, confirm_button_width);
+		confirm_bouton.setFocusable(false);
+		confirm_bouton.setBackground(Color.red);
+		confirm_bouton.setForeground(Color.white);
+		confirm_bouton.setBorderPainted(true);
+		
 		/*
 		 *   MODIF ACTION BOUTON
 		 */
 		
 		fetch_bouton.addActionListener(e -> {
-			//   TODO Fetch & show the image
 			int rand_index = rand.nextInt(liste_size);
 			String url_random = liste_url.get(rand_index);
-			// String url_random = "https://api.thecatapi.com/v1/images/search";
 			
 			String json_path = "";
 			
@@ -217,22 +247,14 @@ public class Main {
 				
 				Image image = new ImageIcon(new URL(image_url)).getImage();
 				
-				Image newImage = image.getScaledInstance(600, 450, Image.SCALE_DEFAULT);
+				Image reImage = image.getScaledInstance(600, 450, Image.SCALE_DEFAULT);
 				
 				img_label.setBounds(label_menu_x, label_menu_y, 600, 600);
 				
-				String size = 600 + "," + 600;
-				
-				System.out.println(size);
-				
-				img_label.setIcon(new ImageIcon(newImage));
+				img_label.setIcon(new ImageIcon(reImage));
 				
 				
-			} catch (IOException | InterruptedException e1) {
-				
-			} finally {
-				
-			}
+			} catch (IOException | InterruptedException e1) {}
 		    
 			
 			
@@ -240,27 +262,39 @@ public class Main {
         });
 		
 		save_bouton.addActionListener(e -> {
-			//   TODO Get & Save the Image
-			System.out.println("save_bouton bouton pressé !");
-        });
+		    if (img_label.getIcon() == null) {
+		        System.out.println("No Image Found.");
+		        return;
+		    }
+		    JFileChooser fc = new JFileChooser();
+		    fc.setDialogTitle("Enregistrer image");
+		    if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+		        File f = fc.getSelectedFile();
+		        if (!f.getName().toLowerCase().endsWith(".png")) f = new File(f.getAbsolutePath() + ".png");
+		        try {
+		        	BufferedImage img = new BufferedImage(img_label.getIcon().getIconWidth(), img_label.getIcon().getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+		        	img.createGraphics().drawImage(((ImageIcon) img_label.getIcon()).getImage(), 0, 0, null);
+		        	ImageIO.write(img, "png", f);
+		        } catch (Exception ex) {}
+		    }
+		});
 		
 		
 		
 		
-		setting_bouton.addActionListener(e -> {
+		exit_bouton.addActionListener(e -> {
 			setting_frame.setLocation(main_frame.getLocation());
 			setting_frame.setVisible(true);
-			main_frame.setVisible(false);
-			System.out.println("exit_bouton bouton pressé!");
-			
         });
 		
 		back_bouton.addActionListener(e -> {
             setting_frame.setVisible(false);
             main_frame.setVisible(true);
-            System.out.println("back_bouton bouton pressé!");
-            
         });
+		
+		confirm_bouton.addActionListener(e -> {
+			System.exit(0);
+		});
 		
 	}
 }
